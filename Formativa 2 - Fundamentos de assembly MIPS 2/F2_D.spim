@@ -1,0 +1,133 @@
+.text
+main:
+    # ler comando
+    li $v0, 12
+    syscall
+    move $s0, $v0
+    li $v0, 12
+    syscall
+
+    # ler n
+    li $v0, 5
+    syscall
+    move $s1, $v0
+
+    # alocar frase
+    addi $t0, $s1, 2
+    li $v0, 9
+    move $a0, $t0
+    syscall
+    move $s3, $v0
+
+    # ler frase
+    li $v0, 8
+    move $a0, $s3
+    move $a1, $t0
+    syscall
+    
+    li $t0, 'M'
+    beq $s0, $t0, maiuscula # se cmd = M, maiuscula
+
+    li $t0, 'm'
+    beq $s0, $t0, minuscula # se cmd = m, minuscula
+
+    # senao, capitalize
+    j capitalize
+
+maiuscula:
+    # intervalo de minusculas 
+    li $t0, 96
+    li $t1, 173
+    
+    move $t4, $zero # i = 0
+    forM:
+    slt $v1, $t4, $s1 # se i < n, $v1 = 1
+    beq $v1, $zero, exit # se $v1 = 0, exit
+
+    add $t2, $s3, $t4 # $t2 = frase + i
+    lb $t3, ($t2) # $t3 = frase[i]
+
+    slt $v1, $t0, $t3 # se 96 < frase[i], $v1 = 1
+    beq $v1, $zero, endifM # se $v1 = 0, endif
+    slt $v1, $t3, $t1 # se frase[i] < 173, $v1 = 1
+    beq $v1, $zero, endifM # se $v1 = 0, endif
+    
+    addi $t3, $t3, -32 # frase[i] -= 32
+    sb $t3, ($t2) # salva valor
+    
+    endifM:
+    addi $t4, $t4, 1 # i++
+    j forM
+
+minuscula:
+    # intervalo de maiusculas
+    li $t0, 64
+    li $t1, 91
+
+    move $t4, $zero # i = 0
+    form:
+    slt $v1, $t4, $s1 # se i < n, $v1 = 1
+    beq $v1, $zero, exit # se $v1 = 0, exit
+
+    add $t2, $s3, $t4 # $t2 = frase + i
+    lb $t3, ($t2) # $t3 = frase[i]
+
+    slt $v1, $t0, $t3 # se 64 < frase[i], $v1 = 1
+    beq $v1, $zero, endifm # se $v1 = 0, endif
+    slt $v1, $t3, $t1 # se frase[i] < 91, $v1 = 1
+    beq $v1, $zero, endifm # se $v1 = 0, endif
+    
+    addi $t3, $t3, 32 # frase[i] += 32
+    sb $t3, ($t2) # salva valor
+    
+    endifm:
+    addi $t4, $t4, 1 # i++
+    j form
+
+capitalize:
+    li $t0, 96
+    li $t1, 173
+    li $t5, ' ' # valor de espaco
+    
+    add $t2, $s3, $t4 # $t2 = frase + i
+    lb $t3, ($t2) # $t3 = frase[i]
+
+    slt $v1, $t0, $t3 # se 96 < frase[i], $v1 = 1
+    beq $v1, $zero, endifc0 # se $v1 = 0, endif
+    slt $v1, $t3, $t1 # se frase[i] < 173, $v1 = 1
+    beq $v1, $zero, endifc0 # se $v1 = 0, endif
+    
+    addi $t3, $t3, -32 # frase[i] -= 32
+    sb $t3, ($t2) # salva valor
+    
+    endifc0:
+    li $t4, 1 # i = 1
+    forc:
+    slt $v1, $t4, $s1 # se i < n, $v1 = 1
+    beq $v1, $zero, exit # se $v1 = 0, exit
+
+    add $t2, $s3, $t4 # $t2 = frase + i
+    
+    lb $t3, -1($t2) # $t3 = frase[i-1]
+    bne $t3, $t5, endifc # se frase[i-1] != ' ', endif
+    lb $t3, ($t2) # $t3 = frase[i]
+    slt $v1, $t0, $t3 # se 96 < frase[i], $v1 = 1
+    beq $v1, $zero, endifc # se $v1 = 0, endif
+    slt $v1, $t3, $t1 # se frase[i] < 173, $v1 = 1
+    beq $v1, $zero, endifc # se $v1 = 0, endif
+    
+    addi $t3, $t3, -32 # frase[i] -= 32
+    sb $t3, ($t2) # salva valor
+    
+    endifc:
+    addi $t4, $t4, 1 # i++
+    j forc
+
+exit:
+    # print frase
+    la $a0, ($s3)
+    li $v0, 4
+    syscall
+    # exit
+    li $v0, 10
+    syscall

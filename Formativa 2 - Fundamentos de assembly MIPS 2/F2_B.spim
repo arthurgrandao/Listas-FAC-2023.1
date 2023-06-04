@@ -1,0 +1,91 @@
+.data
+linha: .asciiz "\n"
+
+.text
+main:
+    # add pilha
+    addi $sp, $sp, -12
+    sw $ra, 12($sp)
+
+    # leitura de dados
+    li $v0, 5
+    syscall
+
+    sw $v0, 8($sp)
+    lw $s0, 8($sp)
+
+    li $v0, 5
+    syscall
+
+    sw $v0, 4($sp)
+    lw $s1, 4($sp)
+
+    li $v0, 5
+    syscall
+
+    sw $v0, ($sp)
+    lw $s2, ($sp)
+
+    # calculos
+    add $t0, $s1, $s2 # $t0 = idade1 + idade2
+    sub	$s3, $s0, $t0 # idade3 = idademae - $t0
+
+    slt	$v1, $s2, $s1 # se idade2 < idade1: $v1 = 1
+    beq $v1, $zero, else # se $v1 = 0: else
+
+    slt $v1, $s1, $s3 # se idade1 < idade3: $v1 = 1
+    beq $v1, $zero, else1 # se $v1 = 0: else1
+
+    # print idade3
+    li $v0, 1
+    move $a0, $s3
+    syscall
+    li $v0, 4
+    la $a0, linha
+    syscall
+    j exit
+
+else1:
+    # print idade1
+    li $v0, 1
+    move $a0, $s1 
+    syscall
+    li $v0, 4
+    la $a0, linha
+    syscall
+    j exit
+
+else:
+    slt $v1, $s2, $s3 # se idade2 < idade3: $v1 = 1
+    beq $v1, $zero, else2 # se $v1 = 0: else2
+    
+    # print idade3
+    li $v0, 1
+    move $a0, $s3
+    syscall
+    li $v0, 4
+    la $a0, linha
+    syscall
+    j exit
+
+else2:
+    # print idade2
+    li $v0, 1
+    move $a0, $s2 
+    syscall
+    li $v0, 4
+    la $a0, linha
+    syscall
+    j exit
+
+exit:
+    # remove pilha
+    lw $s2, ($sp)
+    lw $s1, 4($sp)
+    lw $s0, 8($sp)
+    lw $ra, 12($sp)
+    addi $sp, $sp, 12
+
+    # encerra o programa
+    li $v0, 10
+    syscall
