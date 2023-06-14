@@ -11,9 +11,9 @@
 * D - [Maiúsculas e Minúsculas](https://moj.naquadah.com.br/contests/jl_fac_t02_f2_2023_1/maiuscula-minuscula.pdf)
 * E - [Bit de paridade](https://moj.naquadah.com.br/contests/jl_fac_t02_f2_2023_1/bitparidade-funcao.pdf)
 
-## Formativa 3 - 
-* A - 
-* B - 
-* C - 
-* D - 
-* E - 
+## Formativa 3 - Aritmética computacional
+* A - [Overflow](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/overflow-mips.pdf)
+* B - [Multiplicação](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/multiplicacao-mips.pdf)
+* C - [Conversão de temperatura](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/conversao-temperatura.pdf)
+* D - [Média ponderada](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/media-ponderada.pdf)
+* E - [Preço consumidor](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/preco_consumidor.pdf)
