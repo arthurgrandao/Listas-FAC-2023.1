@@ -1,36 +1,36 @@
 bitparidade:
-    move $t0, $zero # $t0 (contador de bit 1) = 0
-    move $t3, $a0 # copia o numero p/ $t3
-     
-    while: # while $t3 != 0
-    beq $t3, $zero, end
-    
-    andi $t2, $t3, 1 # $t2 = $t3 & 1
-    srl $t3, $t3, 1 # shift a direita
-    beq $t2, $zero, while # se o $t2 = 0, retorna ao while 
+    move    $t0,    $zero           # $t0 (contador de bit 1) = 0
+    move    $t3,    $a0             # copia o numero p/ $t3
 
-    addi $t0, $t0, 1 # $t0++
+while:                              # while $t3 != 0
+    beq     $t3,    $zero,  end
 
-    j while
-    
-    end:
-    li $t4, 2
-    div $t0, $t4
-    mfhi $t3 # $t3 = $t0 % 2
+    andi    $t2,    $t3,    1       # $t2 = $t3 & 1
+    srl     $t3,    $t3,    1       # shift a direita
+    beq     $t2,    $zero,  while   # se o $t2 = 0, retorna ao while
 
-    bne $t3, $zero, impar # se $t3 = 0, impar, senao, par
+    addi    $t0,    $t0,    1       # $t0++
 
-    move $v0, $zero # bit-paridade ($v0): 0
-    
-    move $v1, $a0 # saida $(v1): igual
-    j exit
+    j       while
 
-    impar: 
-    move $v0, $t3 # bit-paridade ($v0): 1
+end:
+    li      $t4,    2
+    div     $t0,    $t4
+    mfhi    $t3                     # $t3 = $t0 % 2
 
-    ori	$t5, $a0, 128
+    bne     $t3,    $zero,  impar   # se $t3 = 0, impar, senao, par
 
-    move $v1, $t5 # saida $(v1): $a0 + 128
+    move    $v0,    $zero           # bit-paridade ($v0): 0
 
-    exit:
-    jr $ra
+    move    $v1,    $a0             # saida $(v1): igual
+    j       exit
+
+impar:
+    move    $v0,    $t3             # bit-paridade ($v0): 1
+
+    ori     $t5,    $a0,    128
+
+    move    $v1,    $t5             # saida $(v1): $a0 + 128
+
+exit:
+    jr      $ra

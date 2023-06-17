@@ -8,72 +8,72 @@ sr: .asciiz "SR\n"
 
 .text
 main:
-    # adicionando a stack
-    addi $sp, $sp, -4
-    sw $ra, ($sp)
+# adicionando a stack
+    addi    $sp,    $sp,    -4
+    sw      $ra,    ($sp)
 
-    # lendo o numero
-    li $v0, 5
-    syscall
+# lendo o numero
+    li      $v0,    5
+    syscall 
 
-    sw $v0, ($sp)
-    lw $s0, ($sp)
-    
-    # conferindo mencao
-    slti $v1, $s0, 90 # se nota < 90: $v1 = 1 
-    beq	$v1, $zero, notass # se $v1 = 0: SS
-    # nota < 90
-    slti $v1, $s0, 70 # se nota < 70: $v1 = 1 
-    beq	$v1, $zero, notams # se $v1 = 0: MS
-    # nota < 70
-    slti $v1, $s0, 50 # se nota < 50: $v1 = 1 
-    beq	$v1, $zero, notamm # se $v1 = 0: MM
-    # nota < 50
-    slti $v1, $s0, 30 # se nota < 30: $v1 = 1 
-    beq	$v1, $zero, notami # se $v1 = 0: MI
-    # nota < 30
-    slti $v1, $s0, 1 # se nota < 1: $v1 = 1 
-    beq	$v1, $zero, notaii # se $v1 = 0: II
-    # nota = 0
-    j notasr
-    
+    sw      $v0,    ($sp)
+    lw      $s0,    ($sp)
+
+# conferindo mencao
+    slti    $v1,    $s0,    90      # se nota < 90: $v1 = 1
+    beq     $v1,    $zero,  notass  # se $v1 = 0: SS
+                                    # nota < 90
+    slti    $v1,    $s0,    70      # se nota < 70: $v1 = 1
+    beq     $v1,    $zero,  notams  # se $v1 = 0: MS
+                                    # nota < 70
+    slti    $v1,    $s0,    50      # se nota < 50: $v1 = 1
+    beq     $v1,    $zero,  notamm  # se $v1 = 0: MM
+                                    # nota < 50
+    slti    $v1,    $s0,    30      # se nota < 30: $v1 = 1
+    beq     $v1,    $zero,  notami  # se $v1 = 0: MI
+                                    # nota < 30
+    slti    $v1,    $s0,    1       # se nota < 1: $v1 = 1
+    beq     $v1,    $zero,  notaii  # se $v1 = 0: II
+                                    # nota = 0
+    j       notasr
+
 notass:
-    li $v0, 4
-    la $a0, ss
-    syscall
-    j exit
+    li      $v0,    4
+    la      $a0,    ss
+    syscall 
+    j       exit
 
 notams:
-    li $v0, 4
-    la $a0, ms
-    syscall
-    j exit
+    li      $v0,    4
+    la      $a0,    ms
+    syscall 
+    j       exit
 
 notamm:
-    li $v0, 4
-    la $a0, mm
-    syscall
-    j exit
+    li      $v0,    4
+    la      $a0,    mm
+    syscall 
+    j       exit
 
 notami:
-    li $v0, 4
-    la $a0, mi
-    syscall
-    j exit
+    li      $v0,    4
+    la      $a0,    mi
+    syscall 
+    j       exit
 
 notaii:
-    li $v0, 4
-    la $a0, ii
-    syscall
-    j exit
+    li      $v0,    4
+    la      $a0,    ii
+    syscall 
+    j       exit
 
 notasr:
-    li $v0, 4
-    la $a0, sr
-    syscall
-    
+    li      $v0,    4
+    la      $a0,    sr
+    syscall 
+
 exit:
-    lw $ra, ($sp)       
-    addi $sp, $sp, 4
-    li $v0, 10
-    syscall
+    lw      $ra,    ($sp)
+    addi    $sp,    $sp,    4
+    li      $v0,    10
+    syscall 
