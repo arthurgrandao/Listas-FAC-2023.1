@@ -1,0 +1,95 @@
+.data
+linha: .asciiz "\n"
+
+.text
+main:
+    li      $v0,    12
+    syscall 
+    move    $s0,    $v0             # ler primeira escala
+
+    li      $v0,    12
+    syscall 
+
+    li      $v0,    12
+    syscall 
+    move    $s1,    $v0             # ler segunda escala
+
+    li      $v0,    12
+    syscall 
+
+    li      $v0,    6
+    syscall                         # ler float
+
+    li      $t0,    67              # C
+    li      $t1,    70              # F
+    li      $t2,    75              # K
+
+    li.s    $f1,    1.8
+    li.s    $f2,    0.555555        # 5/9
+    li.s    $f3,    32.0
+    li.s    $f4,    273.15
+
+# primeira escala
+    beq     $s0,    $t0,    c
+    beq     $s0,    $t1,    f
+    beq     $s0,    $t2,    k
+
+# Celsius
+c:
+    beq     $s1,    $t2,    ck
+
+# para Farenheit
+cf:
+    mul.s   $f0,    $f0,    $f1     # x = x * 1.8
+    add.s   $f0,    $f0,    $f3     # x = x + 32
+    j       exit
+
+# para Kelvin
+ck:
+    add.s   $f0,    $f0,    $f4     # x = x + 273
+    j       exit
+
+# Farenheit
+f:
+    beq     $s1,    $t2,    fk
+
+# para Celsius
+fc:
+    sub.s   $f0,    $f0,    $f3     # x = x - 32
+    div.s   $f0,    $f0,    $f1     # x = x / 1.8
+    j       exit
+
+# para Kelvin
+fk:
+    sub.s   $f0,    $f0,    $f3     # x = x - 32
+    mul.s   $f0,    $f0,    $f2     # x = x * 5/9
+    add.s   $f0,    $f0,    $f4     # x = x + 273
+    j       exit
+
+# Kelvin
+k:
+    beq     $s1,    $t1,    kf
+
+# para Celsius
+kc:
+    sub.s   $f0,    $f0,    $f4     # x = x - 273
+    j       exit
+
+# para Farenheit
+kf:
+    sub.s   $f0,    $f0,    $f4     # x = x - 273
+    mul.s   $f0,    $f0,    $f1     # x = x * 1.8
+    add.s   $f0,    $f0,    $f3     # x = x + 32
+    j       exit
+
+exit:
+    li      $v0,    2
+    mov.s   $f12,   $f0             # print resultado
+    syscall 
+
+    li      $v0,    4
+    la      $a0,    linha
+    syscall 
+
+    li      $v0,    10
+    syscall 

@@ -1,0 +1,38 @@
+.data
+linha: .asciiz "\n"
+
+.text
+main:
+    li      $v0,    5
+    syscall 
+    move    $s0,    $v0             # ler N
+
+    move    $t0,    $zero           # i = 0
+for:
+    slt     $v1,    $t0,    $s0
+    beq     $v1,    $zero,  end     # if i > N, end
+
+    li      $v0,    6
+    syscall 
+    mov.s   $f2,    $f0             # ler peso
+    li      $v0,    6
+    syscall 
+    mov.s   $f3,    $f0             # ler nota
+
+    mul.s   $f4,    $f2,    $f3     # multiplicar peso
+    add.s   $f1,    $f1,    $f4     # somar a media
+
+    addi    $t0,    $t0,    1       # i++
+    j       for
+
+end:
+    li      $v0,    2
+    mov.s   $f12,   $f1             # print media
+    syscall 
+
+    li      $v0,    4
+    la      $a0,    linha
+    syscall 
+
+    li      $v0,    10
+    syscall 
