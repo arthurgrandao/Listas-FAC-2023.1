@@ -1,6 +1,6 @@
 .text
 main:
-                                                # ler comando
+# ler comando
     li      $v0,        12
     syscall 
     move    $s0,        $v0

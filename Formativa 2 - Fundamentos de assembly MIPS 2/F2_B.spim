@@ -3,8 +3,8 @@ linha: .asciiz "\n"
 
 .text
 main:
-                                        # add pilha
-    addi    $sp,    $sp,        -12
+# add pilha
+    addi    $sp,    $sp,    -12
     sw      $ra,    12($sp)
 
 # leitura de dados
@@ -27,14 +27,14 @@ main:
     lw      $s2,    ($sp)
 
 # calculos
-    add     $t0,    $s1,        $s2     # $t0 = idade1 + idade2
-    sub     $s3,    $s0,        $t0     # idade3 = idademae - $t0
+    add     $t0,    $s1,    $s2     # $t0 = idade1 + idade2
+    sub     $s3,    $s0,    $t0     # idade3 = idademae - $t0
 
-    slt     $v1,    $s2,        $s1     # se idade2 < idade1: $v1 = 1
-    beq     $v1,    $zero,      else    # se $v1 = 0: else
+    slt     $v1,    $s2,    $s1     # se idade2 < idade1: $v1 = 1
+    beq     $v1,    $zero,  else    # se $v1 = 0: else
 
-    slt     $v1,    $s1,        $s3     # se idade1 < idade3: $v1 = 1
-    beq     $v1,    $zero,      else1   # se $v1 = 0: else1
+    slt     $v1,    $s1,    $s3     # se idade1 < idade3: $v1 = 1
+    beq     $v1,    $zero,  else1   # se $v1 = 0: else1
 
 # print idade3
     li      $v0,    1
@@ -46,7 +46,7 @@ main:
     j       exit
 
 else1:
-                                        # print idade1
+# print idade1
     li      $v0,    1
     move    $a0,    $s1
     syscall 
@@ -56,8 +56,8 @@ else1:
     j       exit
 
 else:
-    slt     $v1,    $s2,        $s3     # se idade2 < idade3: $v1 = 1
-    beq     $v1,    $zero,      else2   # se $v1 = 0: else2
+    slt     $v1,    $s2,    $s3     # se idade2 < idade3: $v1 = 1
+    beq     $v1,    $zero,  else2   # se $v1 = 0: else2
 
 # print idade3
     li      $v0,    1
@@ -69,7 +69,7 @@ else:
     j       exit
 
 else2:
-                                        # print idade2
+# print idade2
     li      $v0,    1
     move    $a0,    $s2
     syscall 
@@ -79,12 +79,12 @@ else2:
     j       exit
 
 exit:
-                                        # remove pilha
+# remove pilha
     lw      $s2,    ($sp)
     lw      $s1,    4($sp)
     lw      $s0,    8($sp)
     lw      $ra,    12($sp)
-    addi    $sp,    $sp,        12
+    addi    $sp,    $sp,    12
 
 # encerra o programa
     li      $v0,    10
