@@ -6,14 +6,20 @@ main:
     li      $v0,    6
     syscall 
     mov.s   $f1,    $f0             # ler custo de fabrica
-    
-    li      $v0,    6
-    syscall 
-    mov.s   $f2,    $f0             # ler taxa lucro
 
-    li      $v0,    6
+    li      $v0,    5
     syscall 
-    mov.s   $f3,    $f0             # ler taxa imposto
+    move    $t0,    $v0             # ler taxa de lucro
+
+    li      $v0,    5
+    syscall 
+    move    $t1,    $v0             # ler taxa de imposto
+
+    mtc1    $t0,    $f2
+    cvt.s.w $f2,    $f2             # converter tx. de lucro para float
+
+    mtc1    $t1,    $f3
+    cvt.s.w $f3,    $f3             # converter tx. de imposto para float
 
     li.s    $f0,    100.0
 
@@ -22,7 +28,7 @@ main:
 
     mov.s   $f4,    $f1             # resultado = custo de fabrica
 
-    mul.s   $f5,    $f1,    $f2     # x = custo de fabrica * taxa de lucro 
+    mul.s   $f5,    $f1,    $f2     # x = custo de fabrica * taxa de lucro
     mul.s   $f6,    $f1,    $f3     # y = custo de fabrica * taxa de imposto
 
     add.s   $f4,    $f4,    $f5     # resultado += x

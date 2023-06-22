@@ -7,17 +7,19 @@ main:
     syscall 
     move    $s0,    $v0             # ler N
 
+    li      $v0,    6
+
     move    $t0,    $zero           # i = 0
 for:
     slt     $v1,    $t0,    $s0
     beq     $v1,    $zero,  end     # if i > N, end
 
-    li      $v0,    6
     syscall 
     mov.s   $f2,    $f0             # ler peso
-    li      $v0,    6
     syscall 
     mov.s   $f3,    $f0             # ler nota
+
+    add.s   $f5,    $f5,    $f2     # somar pesos
 
     mul.s   $f4,    $f2,    $f3     # multiplicar peso
     add.s   $f1,    $f1,    $f4     # somar a media
@@ -26,6 +28,8 @@ for:
     j       for
 
 end:
+    div.s   $f1,    $f1,    $f5     # media ponderada
+
     li      $v0,    2
     mov.s   $f12,   $f1             # print media
     syscall 
