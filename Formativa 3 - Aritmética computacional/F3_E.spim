@@ -3,39 +3,33 @@ linha: .asciiz "\n"
 
 .text
 main:
-    li      $v0,    6
+    li      $v0,    7
     syscall 
-    mov.s   $f1,    $f0             # ler custo de fabrica
+    mov.d   $f2,    $f0             # ler custo de fabrica
 
-    li      $v0,    5
+    li      $v0,    7
     syscall 
-    move    $t0,    $v0             # ler taxa de lucro
+    mov.d    $f4,    $f0            # ler taxa de lucro
 
-    li      $v0,    5
+    li      $v0,    7
     syscall 
-    move    $t1,    $v0             # ler taxa de imposto
+    mov.d    $f6,    $f0            # ler taxa de imposto
 
-    mtc1    $t0,    $f2
-    cvt.s.w $f2,    $f2             # converter tx. de lucro para float
+    li.d    $f0,    100.0
 
-    mtc1    $t1,    $f3
-    cvt.s.w $f3,    $f3             # converter tx. de imposto para float
+    div.d   $f4,    $f4,    $f0     # transformando em porcentagem
+    div.d   $f6,    $f6,    $f0     # transformando em porcentagem
 
-    li.s    $f0,    100.0
+    mov.d   $f8,    $f2             # resultado = custo de fabrica
 
-    div.s   $f2,    $f2,    $f0     # transformando em porcentagem
-    div.s   $f3,    $f3,    $f0     # transformando em porcentagem
+    mul.d   $f10,    $f2,    $f4    # x = custo de fabrica * taxa de lucro
+    mul.d   $f12,    $f2,    $f6    # y = custo de fabrica * taxa de imposto
 
-    mov.s   $f4,    $f1             # resultado = custo de fabrica
+    add.d   $f8,    $f8,    $f10    # resultado += x
+    add.d   $f8,    $f8,    $f12    # resultado += y
 
-    mul.s   $f5,    $f1,    $f2     # x = custo de fabrica * taxa de lucro
-    mul.s   $f6,    $f1,    $f3     # y = custo de fabrica * taxa de imposto
-
-    add.s   $f4,    $f4,    $f5     # resultado += x
-    add.s   $f4,    $f4,    $f6     # resultado += y
-
-    li      $v0,    2
-    mov.s   $f12,   $f4             # print resultado
+    li      $v0,    3
+    mov.d   $f12,   $f8             # print resultado
     syscall 
 
     li      $v0,    4
