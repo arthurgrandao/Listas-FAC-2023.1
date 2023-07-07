@@ -17,3 +17,9 @@
 * C - [Conversão de temperatura](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/conversao-temperatura.pdf)
 * D - [Média ponderada](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/media-ponderada.pdf)
 * E - [Preço consumidor](https://moj.naquadah.com.br/contests/jl_fac_t02_f3_2023_1/preco_consumidor.pdf)
+
+## Trabalho 
+* A - [Codificação usando Base85](https://moj.naquadah.com.br/contests/jl_fac_t02_trab_2023_1/base85-mips.pdf)
+* B - [Teste de primalidade](https://moj.naquadah.com.br/contests/jl_fac_t02_trab_2023_1/testa-primo-mips.pdf)
+* C - [Raiz quadrada](https://moj.naquadah.com.br/contests/jl_fac_t02_trab_2023_1/sqrt-bisec-fac.pdf)
+* D - [Números distintos](https://moj.naquadah.com.br/contests/jl_fac_t02_trab_2023_1/vetor_unicos_mips.pdf)
