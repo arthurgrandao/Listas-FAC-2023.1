@@ -1,0 +1,31 @@
+elemDistintos:
+    move    $s0,            $a0             # $s0 = *v
+    move    $s1,            $a1             # $s1 = tamanho
+
+    lw      $t0,            0($s0)          # anterior = v[0]
+
+    li      $t1,            1               # distintos = 1
+
+    li      $t7,            1               # i = 1
+for:
+    slt     $v1,            $t7,    $s1
+    beq     $v1,            $zero,  end     # while i < tamanho
+
+    sll     $t3,            $t7,    2
+    add     $t3,            $t3,    $s0
+    lw      $t2,            0($t3)          # $t2 = v[i]
+
+    beq     $t2,            $t0,    endif   # if v[i] != anterior
+
+    addi    $t1,            $t1,    1       # distintos+=
+    move    $t0,            $t2             # anterior = v[i]
+
+endif:
+
+    addi    $t7,            $t7,    1       # i++
+    j       for
+
+end:
+    move    $v0,            $t1             # salvando resultado
+
+    jr      $ra                             # return
