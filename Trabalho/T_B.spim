@@ -1,0 +1,118 @@
+.data
+primos: .word 2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97
+msg_i: .asciiz "Entrada invalida.\n"
+msg_s: .asciiz "sim\n"
+msg_n: .asciiz "nao\n"
+
+.text
+main:
+    li      $v0,    5
+    syscall 
+    move    $t0,    $v0             # x
+
+    li      $t1,    16              # E
+
+    li      $t2,    1
+    slt     $v1,    $t0,    $t2
+    bne     $v1,    $zero,  inval   # if x < 1, invalido
+    beq     $t0,    $t2,    nao     # if x = 1, nao primo
+    j       val
+inval:
+    li      $v0,    4
+    la      $a0,    msg_i
+    syscall                         # print msg invalidos
+
+    j       exit
+val:
+    li.d    $f22,   2.0             # valor_precisao = 1
+    li.d    $f4,    10.0            # constante 10
+
+    move    $t3,    $zero           # i = 0
+for1:
+    slt     $v1,    $t3,    $t1
+    beq     $v1,    $zero,  end1    # while i < E
+
+    div.d   $f22,   $f22,   $f4     # valor_precisao *= 10
+
+    addi    $t3,    $t3,    1
+    j       for1
+end1:
+    move    $t3,    $zero           # i = 0
+for2:
+    mul     $t4,    $t3,    $t3     # $t4 = i*i
+    addi    $t5,    $t0,    1       # $t5 = x + 1
+    slt     $v1,    $t4,    $t5
+    beq     $v1,    $zero,  end2    # while i*i <= x
+
+    addi    $t6,    $t3,    -1      # a = i - 1
+
+    addi    $t3,    $t3,    1
+    j       for2
+end2:
+    mtc1.d  $t6,    $f2
+    cvt.d.w $f2,    $f2             # (double) a
+
+    mtc1.d  $t0,    $f4
+    cvt.d.w $f4,    $f4             # (double) x
+
+    li.d    $f10,   2.0             # constante 2
+
+    li      $t5,    1               # iter = 1
+    div.d   $f6,    $f4,    $f2     # b = x / a
+do:
+    add.d   $f8,    $f2,    $f6     # (a + b)
+    div.d   $f2,    $f8,    $f10    # a = (a + b) / 2
+
+    div.d   $f6,    $f4,    $f2     # b = x / a
+
+    addi    $t5,    $t5,    1
+
+while:
+    sub.d   $f20,   $f2,    $f6     # (a - b)
+    abs.d   $f12,   $f20            # valor absoluto de a - b
+
+    c.lt.d  $f12,   $f22            # if abs(a-b) < valor_precisao, end do while
+    bc1t    enddw
+
+    slti    $v1,    $t5,    100
+    beq     $v1,    $zero,  enddw   # if iter > 100, end do while
+
+    j       do
+enddw:
+    cvt.w.d $f2,    $f2
+    mfc1    $s0,    $f2             # conversao da raiz para int
+
+    la      $s1,    primos          # endereco do vetor de primos
+
+    addi    $t6,    $s0,    1       # constante para comparacao
+
+    move    $t7,    $zero           # i = 0
+for3:
+    sll     $t3,    $t7,    2
+    add     $t4,    $t3,    $s1
+    lw      $t4,    0($t4)          # primos[i]
+
+    slt     $v1,    $t4,    $t6
+    beq     $v1,    $zero,  sim     # if primos[i] > x, primo
+
+    div     $t0,    $t4             # primos[i] / x
+    mfhi    $t3                     # $t3 = primos[i] % x
+
+    beq     $t3,    $zero,  nao     # se x | primos[i], nao primo
+
+    addi    $t7,    $t7,    1       # i++
+    j       for3
+end3:
+
+sim:
+    li      $v0,    4
+    la      $a0,    msg_s
+    syscall 
+    j       exit
+nao:
+    li      $v0,    4
+    la      $a0,    msg_n
+    syscall 
+exit:
+    li      $v0,    10
+    syscall 
