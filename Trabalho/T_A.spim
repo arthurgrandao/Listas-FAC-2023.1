@@ -1,0 +1,127 @@
+.data
+msg_i: .asciiz "Entrada invalida.\n"
+linha: .asciiz "\n"
+
+quar: .word 52200625
+terc: .word 614125
+quad: .word 7225
+
+tab: .asciiz "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#"
+
+.text
+main:
+
+    li      $v0,    9
+    li      $a0,    33
+    syscall 
+    move    $s0,    $v0             # string[32]
+
+    addi    $t7,    $s0,    31
+
+    li      $t2,    10
+    move    $t0,    $zero           # tamanho = 0
+while:
+    li      $v0,    12
+    syscall                         # read c
+
+    beq     $v0,    $t2,    endw    # if c = enter, end while
+
+    sub     $t1,    $t7,    $t0
+    sb      $v0,    0($t1)          # string[tamanho] = c
+
+    addi    $t0,    $t0,    1       # tamanho++
+
+    j       while
+
+endw:
+    li      $t2,    4
+    div     $t0,    $t2             # tamanho / 4
+    mfhi    $t3                     # $t3 = tamanho % 4
+
+    beq     $t3,    $zero,  val     # if tamanho % 4 = 0, valido
+
+    li      $v0,    4
+    la      $a0,    msg_i           # mensagem invalido
+    syscall 
+
+    j       exit
+
+val:
+    la      $s3,    tab             # endereco tabela de simbolos
+    li      $t3,    28              # posicao inicial
+
+loop:
+
+    add     $t1,    $s0,    $t3     # string[posicao inicial]
+
+    lw      $s2,    0($t1)          # $s2 = quarteto
+
+    beq     $s2,    $zero,  exit    # if quarteto = 0, exit
+
+    lw      $t2,    quar            # $t2 = 85^4
+
+    div     $s2,    $t2             # quarteto / 85^4
+    mflo    $t4                     # $t4 = resultado
+
+    mul     $t6,    $t4,    $t2     # $t6 = resultado * 85^4
+    sub     $s2,    $s2,    $t6     # quarteto -= $t6
+
+    add     $t5,    $s3,    $t4     # endereco na tabela
+    li      $v0,    11
+    lb      $a0,    0($t5)
+    syscall                         # print base85
+
+    lw      $t2,    terc            # $t2 = 85^3
+
+    div     $s2,    $t2             # quarteto / 85^3
+    mflo    $t4                     # $t4 = resultado
+
+    mul     $t6,    $t4,    $t2     # $t6 = resultado * 85^3
+    sub     $s2,    $s2,    $t6     # quarteto -= $t6
+
+    add     $t5,    $s3,    $t4     # endereco na tabela
+    li      $v0,    11
+    lb      $a0,    0($t5)
+    syscall                         # print base85
+
+    lw      $t2,    quad            # $t2 = 85^2
+
+    div     $s2,    $t2             # quarteto / 85^2
+    mflo    $t4                     # $t4 = resultado
+
+    mul     $t6,    $t4,    $t2     # $t6 = resultado * 85^2
+    sub     $s2,    $s2,    $t6     # quarteto -= $t6
+
+    add     $t5,    $s3,    $t4     # endereco na tabela
+    li      $v0,    11
+    lb      $a0,    0($t5)
+    syscall                         # print base85
+
+    li      $t2,    85              # $t2 = 85
+
+    div     $s2,    $t2             # quarteto / 85
+    mflo    $t4                     # $t4 = resultado
+
+    mul     $t6,    $t4,    $t2     # $t6 = resultado * 85
+    sub     $s2,    $s2,    $t6     # quarteto -= $t6
+
+    add     $t5,    $s3,    $t4     # endereco na tabela
+    li      $v0,    11
+    lb      $a0,    0($t5)
+    syscall                         # print base85
+
+    add     $t5,    $s3,    $s2     # endereco na tabela
+    li      $v0,    11
+    lb      $a0,    0($t5)
+    syscall                         # print base85
+
+    addi    $t3,    $t3,    -4      # avancar quarteto
+    j       loop
+
+exit:
+    li      $v0,    4
+    la      $a0,    linha
+    syscall 
+
+    li      $v0,    10
+    syscall 
