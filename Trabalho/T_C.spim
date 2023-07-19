@@ -1,0 +1,126 @@
+.data
+msg_i: .asciiz "Entradas invalidas.\n"
+msg_n1: .asciiz "Nao foi possivel calcular sqrt("
+msg_n2: .asciiz ").\n"
+msg_r1: .asciiz "A raiz quadrada de "
+msg_r2: .asciiz " eh "
+msg_r3: .asciiz ", calculada em "
+msg_r4: .asciiz " iteracoes.\n"
+linha: .asciiz "\n"
+
+.text
+main:
+    li      $v0,    7
+    syscall 
+    mov.d   $f2,    $f0                 # x
+
+    li      $v0,    7
+    syscall 
+    mov.d   $f4,    $f0                 # E
+
+    li.d    $f6,    1.0
+    c.le.d  $f2,    $f6                 # if x <= 1, invalido
+    bc1t    inval
+    c.lt.d  $f4,    $f6                 # if E < 1, invalido
+    bc1t    inval
+    li.d    $f6,    16.0                # if E > 16, invalido
+    c.le.d  $f4,    $f6
+    bc1f    inval
+
+    j       val
+inval:
+    li      $v0,    4
+    la      $a0,    msg_i
+    syscall                             # print msg invalidos
+
+    j       exit
+val:
+    li.d    $f22,   1.0                 # valor_precisao = 1
+    li.d    $f6,    10.0                # constante 10
+
+    li.d    $f10,   1.0                 # constante 1
+
+    li.d    $f8,    0.0                 # i = 0
+for1:
+    c.lt.d  $f8,    $f4                 # if i >= E, end1
+    bc1f    end1
+
+    div.d   $f22,   $f22,   $f6         # valor_precisao /= 10
+
+    add.d   $f8,    $f8,    $f10        # i++
+    j       for1
+end1:
+
+    li.d    $f6,    1.0                 # i = 1
+for2:
+    mul.d   $f8,    $f6,    $f6         # $t4 = i*i
+    c.lt.d  $f8,    $f2                 # if i*i >= x, end2
+    bc1f    end2
+
+    add.d   $f6,    $f6,    $f10        # i++
+    j       for2
+
+end2:
+    sub.d   $f12,   $f6,    $f10        # a = i - 1
+
+    li.d    $f10,   2.0                 # constante 2
+    li      $t3,    100
+
+    li      $t5,    0                   # iter = 0
+do:
+    div.d   $f6,    $f2,    $f12        # b = x / a
+    add.d   $f8,    $f12,   $f6         # (a + b)
+    div.d   $f12,   $f8,    $f10        # a = (a + b) / 2
+
+
+    addi    $t5,    $t5,    1
+
+while:
+    sub.d   $f20,   $f12,   $f6         # (a - b)
+    abs.d   $f18,   $f20                # valor absoluto de a - b
+
+    c.le.d  $f18,   $f22                # if abs(a-b) <= valor_precisao, resultado
+    bc1t    res
+
+    beq     $t5,    $t3,    enddw       # if iter = 100, end do while
+
+    j       do
+enddw:
+    li      $v0,    4
+    la      $a0,    msg_n1
+    syscall 
+    li      $v0,    3
+    mov.d   $f12,   $f2
+    syscall 
+    li      $v0,    4
+    la      $a0,    msg_n2
+    syscall 
+    j       exit
+
+res:
+    mov.d   $f24,   $f12                # copia de a para poder imprimir
+    li      $v0,    4
+    la      $a0,    msg_r1
+    syscall 
+    li      $v0,    3
+    mov.d   $f12,   $f2
+    syscall 
+    li      $v0,    4
+    la      $a0,    msg_r2
+    syscall 
+    li      $v0,    3
+    mov.d   $f12,   $f24
+    syscall 
+    li      $v0,    4
+    la      $a0,    msg_r3
+    syscall 
+    li      $v0,    1
+    move    $a0,    $t5
+    syscall 
+    li      $v0,    4
+    la      $a0,    msg_r4
+    syscall 
+
+exit:
+    li      $v0,    10
+    syscall 
